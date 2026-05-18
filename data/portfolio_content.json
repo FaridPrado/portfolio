@@ -117,6 +117,31 @@
       "repoUrl": "https://github.com/faridSprado/opspilot-newrelic",
       "projectUrl": "https://opspilot-newrelic.vercel.app/",
       "images": []
+    },
+    {
+      "id": "Agentops-Studio",
+      "title": "Multimedia AgentOps Studio",
+      "description": "Una plataforma tipo SaaS que transforma briefs creativos en campañas multimedia completas mediante un flujo de agentes de inteligencia artificial especializados. El sistema genera investigación de audiencia, estrategia de campaña, copy multicanal, storyboard para video, dirección visual, plan operativo, KPIs, revisión de marca y evaluación automática de calidad.\n\n",
+      "technologies": [
+        "Next.js",
+        "React",
+        "TypeScript",
+        "Tailwind",
+        "CSS",
+        "FastAPI",
+        "Python",
+        "SQLAlchemy",
+        "SQLite",
+        "Groq",
+        "API",
+        "REST",
+        "API",
+        "Vercel",
+        "Render"
+      ],
+      "repoUrl": "https://github.com/faridSprado/agentops-studio",
+      "projectUrl": "https://agentops-studio-web.vercel.app/",
+      "images": []
     }
   ],
   "experiences": [
