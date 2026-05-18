@@ -244,6 +244,51 @@
         "Ingeniería Multimedia"
       ],
       "credentialUrl": ""
+    },
+    {
+      "id": "3cd22f57-33ff-4f93-9fd8-d324317c6577",
+      "title": "Google Analytics Certification",
+      "issuer": "Skillshop / Google",
+      "date": "May 2026",
+      "description": "Certificación en Google Analytics 4 para configuración de propiedades web/app, recolección de datos, reportes, análisis de comportamiento\nde usuarios y medición de esfuerzos de marketing digital.",
+      "technologies": [
+        "Google Analytics",
+        "Marketing Digital",
+        "Análisis de datos",
+        "Análisis web"
+      ],
+      "credentialUrl": "https://www.credential.net/3cd22f57-33ff-4f93-9fd8-d324317c6577"
+    },
+    {
+      "id": "OA-2026-0516002628913",
+      "title": "Prompting responsable: maximiza la IA en tu negocio",
+      "issuer": "Santander Open Academy",
+      "date": "Mayo 2026",
+      "description": "Formación en diseño de prompts efectivos, instrucciones claras, adopción responsable de IA, capacidades y limitaciones de los modelos,\nintegración de Copilot y aplicación de IA para mejorar productividad, creatividad y eficiencia en procesos de negocio.",
+      "technologies": [
+        "Ingeniería de Prompts",
+        "Microsoft Copilot",
+        "IA Generativa",
+        "Automatización de tareas",
+        "Estrategia de contenidos"
+      ],
+      "credentialUrl": ""
+    },
+    {
+      "id": "OA-2026-0516002628735",
+      "title": "Domina la IA con Gemini",
+      "issuer": "Santander Open Academy / Google",
+      "date": "Mayo 2026",
+      "description": "Formación práctica en fundamentos de IA generativa y uso de Gemini para investigación, síntesis de información, generación de ideas,\nautomatización de tareas, comunicación y productividad profesional.",
+      "technologies": [
+        "Herramientas de IA generativa",
+        "Google Gemini",
+        "Ingeniería de Prompts",
+        "Automatización de Flujos de Trabajo",
+        "Optimización de procesos",
+        "IA Generativa"
+      ],
+      "credentialUrl": ""
     }
   ],
   "languageEcosystem": [
