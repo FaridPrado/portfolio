@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { defaultPortfolioContent } from "@/data/defaultContent"
-import { fetchPortfolioContent } from "@/lib/api/content"
+import { fetchPortfolioContent, normalizePortfolioContent } from "@/lib/api/content"
 import type { PortfolioContent, PortfolioContentState } from "@/types"
 
 const CONTENT_CACHE_KEY = "portfolio-content-cache-v1"
@@ -10,17 +10,18 @@ function readCachedContent(): PortfolioContent | null {
 
   try {
     const raw = window.localStorage.getItem(CONTENT_CACHE_KEY)
-    return raw ? (JSON.parse(raw) as PortfolioContent) : null
+    return raw ? normalizePortfolioContent(JSON.parse(raw) as PortfolioContent) : null
   } catch {
     return null
   }
 }
 
 function writeCachedContent(content: PortfolioContent) {
+  const normalizedContent = normalizePortfolioContent(content)
   if (typeof window === "undefined") return
 
   try {
-    window.localStorage.setItem(CONTENT_CACHE_KEY, JSON.stringify(content))
+    window.localStorage.setItem(CONTENT_CACHE_KEY, JSON.stringify(normalizedContent))
   } catch {
     // Ignore storage errors. The remote API remains the source of truth.
   }
@@ -35,8 +36,9 @@ export const usePortfolioContentStore = create<PortfolioContentState>((set) => {
     error: null,
 
     setContent: (content) => {
-      writeCachedContent(content)
-      set({ content, error: null })
+      const normalizedContent = normalizePortfolioContent(content)
+      writeCachedContent(normalizedContent)
+      set({ content: normalizedContent, error: null })
     },
 
     loadContent: async () => {
@@ -49,7 +51,7 @@ export const usePortfolioContentStore = create<PortfolioContentState>((set) => {
       })
 
       try {
-        const content = await fetchPortfolioContent()
+        const content = normalizePortfolioContent(await fetchPortfolioContent())
         writeCachedContent(content)
         set({ content, isLoading: false, error: null })
       } catch (error) {

@@ -182,6 +182,7 @@ export const defaultPortfolioContent: PortfolioContent = {
       "companyUrl": ""
     }
   ],
+  "certifications": [],
   "languageEcosystem": [
     {
       "name": "TypeScript",

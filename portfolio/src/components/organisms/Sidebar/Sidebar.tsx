@@ -4,7 +4,11 @@ import { useChatStore, useThemeStore } from "@/store/chatStore";
 import { usePortfolioContentStore } from "@/store/contentStore";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
 import { contactFlowIntro } from "@/data/contact";
-import { sendProjectMessages, sendExperienceMessages } from "@/lib/chatHelpers";
+import {
+  sendCertificationMessages,
+  sendExperienceMessages,
+  sendProjectMessages,
+} from "@/lib/chatHelpers";
 import type { SidebarSectionId } from "@/types";
 import {
   MessageSquare,
@@ -18,6 +22,7 @@ import {
   Github,
   Linkedin,
   GraduationCap,
+  Award,
   Bot,
   RotateCcw,
 } from "lucide-react";
@@ -47,6 +52,12 @@ const sections: SidebarItem[] = [
     label: "Trayectoria",
     description: "Formación, foco y evolución",
     icon: <Briefcase className="w-4 h-4" />,
+  },
+  {
+    id: "certifications",
+    label: "Certificaciones",
+    description: "Credenciales y aprendizaje validado",
+    icon: <Award className="w-4 h-4" />,
   },
   {
     id: "contact",
@@ -123,6 +134,9 @@ export function Sidebar() {
         break;
       case "experience":
         sendExperienceMessages(addMessage, setTyping, content.experiences);
+        break;
+      case "certifications":
+        sendCertificationMessages(addMessage, setTyping, content.certifications);
         break;
       case "contact":
         simulateTypingDelay(setTyping, () => {

@@ -53,6 +53,16 @@ class ExperienceContent(BaseModel):
     companyUrl: str = ""
 
 
+class CertificationContent(BaseModel):
+    id: str
+    title: str
+    issuer: str
+    date: str
+    description: str
+    technologies: list[str] = Field(default_factory=list)
+    credentialUrl: str = ""
+
+
 class LanguageEntry(BaseModel):
     name: str
     use: str
@@ -64,4 +74,5 @@ class PortfolioContent(BaseModel):
     about: str
     projects: list[ProjectContent] = Field(default_factory=list)
     experiences: list[ExperienceContent] = Field(default_factory=list)
+    certifications: list[CertificationContent] = Field(default_factory=list)
     languageEcosystem: list[LanguageEntry] = Field(default_factory=list)

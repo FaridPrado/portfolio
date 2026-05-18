@@ -72,6 +72,22 @@ class PortfolioContentStore:
                 ]
             )
 
+        lines.append("## Certificaciones")
+        if content.certifications:
+            for item in content.certifications:
+                lines.extend(
+                    [
+                        f"### {item.title} - {item.issuer}",
+                        f"Fecha: {item.date}",
+                        item.description,
+                        f"Tecnologías/temas: {', '.join(item.technologies)}",
+                        f"Credencial: {item.credentialUrl}" if item.credentialUrl else "Credencial: no especificada",
+                        "",
+                    ]
+                )
+        else:
+            lines.extend(["No hay certificaciones publicadas todavía.", ""])
+
         lines.append("## Ecosistema de lenguajes y tecnologías")
         for language in content.languageEcosystem:
             lines.append(f"- {language.name}: {language.use}")

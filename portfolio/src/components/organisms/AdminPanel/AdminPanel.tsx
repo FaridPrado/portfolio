@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowLeft,
+  Award,
   Briefcase,
   CheckCircle2,
   Code2,
   Eye,
+  ImagePlus,
   KeyRound,
   Plus,
   Save,
@@ -19,16 +21,24 @@ import {
 } from "@/lib/api/content";
 import { cn } from "@/lib/utils";
 import { usePortfolioContentStore } from "@/store/contentStore";
-import type { Experience, PortfolioContent, Project } from "@/types";
+import type { Certification, Experience, PortfolioContent, Project } from "@/types";
 
 const SESSION_KEY = "portfolio_admin_secret";
+const MAX_IMAGE_UPLOAD_SIZE = 2 * 1024 * 1024;
 
-type AdminTab = "profile" | "projects" | "experience" | "languages" | "json";
+type AdminTab =
+  | "profile"
+  | "projects"
+  | "experience"
+  | "certifications"
+  | "languages"
+  | "json";
 
 const tabs: Array<{ id: AdminTab; label: string; icon: typeof UserRound }> = [
   { id: "profile", label: "Perfil", icon: UserRound },
   { id: "projects", label: "Proyectos", icon: Code2 },
   { id: "experience", label: "Trayectoria", icon: Briefcase },
+  { id: "certifications", label: "Certificaciones", icon: Award },
   { id: "languages", label: "Lenguajes", icon: Eye },
   { id: "json", label: "JSON", icon: Save },
 ];
@@ -73,6 +83,18 @@ function createExperience(): Experience {
   };
 }
 
+function createCertification(): Certification {
+  return {
+    id: createId("certification"),
+    title: "Nueva certificación",
+    issuer: "Institución emisora",
+    date: "Año o fecha",
+    description: "Describe qué acredita y por qué aporta a tu perfil.",
+    technologies: ["IA", "Producto"],
+    credentialUrl: "",
+  };
+}
+
 interface TextFieldProps {
   label: string;
   value: string;
@@ -114,6 +136,93 @@ function TextField({
   );
 }
 
+interface DraftTextareaFieldProps<T> {
+  label: string;
+  value: T;
+  formatValue: (value: T) => string;
+  parseValue: (value: string) => T;
+  onChange: (value: T) => void;
+  placeholder?: string;
+  rows?: number;
+  helper?: string;
+}
+
+function DraftTextareaField<T>({
+  label,
+  value,
+  formatValue,
+  parseValue,
+  onChange,
+  placeholder,
+  rows = 5,
+  helper,
+}: DraftTextareaFieldProps<T>) {
+  const [draft, setDraft] = useState(() => formatValue(value));
+  const [isFocused, setFocused] = useState(false);
+
+  useEffect(() => {
+    if (!isFocused) setDraft(formatValue(value));
+  }, [formatValue, isFocused, value]);
+
+  const commitDraft = (nextDraft = draft) => {
+    setDraft(nextDraft);
+    onChange(parseValue(nextDraft));
+  };
+
+  return (
+    <label className="block text-sm font-bold text-foreground">
+      {label}
+      <textarea
+        value={draft}
+        onFocus={() => setFocused(true)}
+        onChange={(event) => {
+          const nextDraft = event.target.value;
+          setDraft(nextDraft);
+          onChange(parseValue(nextDraft));
+        }}
+        onBlur={() => {
+          setFocused(false);
+          commitDraft();
+        }}
+        placeholder={placeholder}
+        rows={rows}
+        className="mt-2 w-full rounded-2xl border border-border bg-background/70 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary/50 focus:ring-4 focus:ring-primary/10"
+      />
+      {helper && (
+        <span className="mt-2 block text-xs leading-5 text-muted-foreground">
+          {helper}
+        </span>
+      )}
+    </label>
+  );
+}
+
+function ListField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  helper,
+}: {
+  label: string;
+  value: string[];
+  onChange: (value: string[]) => void;
+  placeholder?: string;
+  helper?: string;
+}) {
+  return (
+    <DraftTextareaField
+      label={label}
+      value={value}
+      formatValue={joinList}
+      parseValue={splitList}
+      onChange={onChange}
+      placeholder={placeholder}
+      helper={helper}
+    />
+  );
+}
+
 export function AdminPanel() {
   const setGlobalContent = usePortfolioContentStore(
     (state) => state.setContent,
@@ -131,6 +240,9 @@ export function AdminPanel() {
   );
   const [selectedExperienceId, setSelectedExperienceId] = useState(
     defaultPortfolioContent.experiences[0]?.id ?? "",
+  );
+  const [selectedCertificationId, setSelectedCertificationId] = useState(
+    defaultPortfolioContent.certifications[0]?.id ?? "",
   );
   const [jsonDraft, setJsonDraft] = useState(() =>
     JSON.stringify(defaultPortfolioContent, null, 2),
@@ -158,6 +270,14 @@ export function AdminPanel() {
     [content.experiences, selectedExperienceId],
   );
 
+  const selectedCertification = useMemo(
+    () =>
+      content.certifications.find(
+        (certification) => certification.id === selectedCertificationId,
+      ) ?? content.certifications[0],
+    [content.certifications, selectedCertificationId],
+  );
+
   useEffect(() => {
     setJsonDraft(JSON.stringify(content, null, 2));
   }, [content]);
@@ -171,6 +291,7 @@ export function AdminPanel() {
         setGlobalContent(remoteContent);
         setSelectedProjectId(remoteContent.projects[0]?.id ?? "");
         setSelectedExperienceId(remoteContent.experiences[0]?.id ?? "");
+        setSelectedCertificationId(remoteContent.certifications[0]?.id ?? "");
         setStatus({ type: "ok", text: "Contenido cargado." });
       })
       .catch(() => {
@@ -253,6 +374,74 @@ export function AdminPanel() {
     }));
   };
 
+  const appendProjectImages = (id: string, images: string[]) => {
+    updateContent((current) => ({
+      ...current,
+      projects: current.projects.map((project) =>
+        project.id === id
+          ? { ...project, images: [...project.images, ...images] }
+          : project,
+      ),
+    }));
+  };
+
+  const removeProjectImage = (id: string, imageIndex: number) => {
+    updateContent((current) => ({
+      ...current,
+      projects: current.projects.map((project) =>
+        project.id === id
+          ? {
+              ...project,
+              images: project.images.filter((_, index) => index !== imageIndex),
+            }
+          : project,
+      ),
+    }));
+  };
+
+  const readImageAsDataUrl = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(reader.error);
+      reader.readAsDataURL(file);
+    });
+
+  const handleProjectImageUpload = async (
+    projectId: string,
+    files: FileList | null,
+  ) => {
+    const selectedFiles = Array.from(files ?? []);
+    if (selectedFiles.length === 0) return;
+
+    const invalidFile = selectedFiles.find(
+      (file) =>
+        !file.type.startsWith("image/") || file.size > MAX_IMAGE_UPLOAD_SIZE,
+    );
+
+    if (invalidFile) {
+      setStatus({
+        type: "error",
+        text: "Sube solo imágenes de máximo 2 MB cada una.",
+      });
+      return;
+    }
+
+    try {
+      const images = await Promise.all(selectedFiles.map(readImageAsDataUrl));
+      appendProjectImages(projectId, images);
+      setStatus({
+        type: "ok",
+        text: "Imagen agregada al proyecto. Guarda para publicarla.",
+      });
+    } catch {
+      setStatus({
+        type: "error",
+        text: "No se pudo leer la imagen seleccionada.",
+      });
+    }
+  };
+
   const addExperience = () => {
     const experience = createExperience();
     updateContent((current) => ({
@@ -280,6 +469,40 @@ export function AdminPanel() {
       ...current,
       experiences: current.experiences.map((experience) =>
         experience.id === id ? { ...experience, ...patch } : experience,
+      ),
+    }));
+  };
+
+  const addCertification = () => {
+    const certification = createCertification();
+    updateContent((current) => ({
+      ...current,
+      certifications: [...current.certifications, certification],
+    }));
+    setSelectedCertificationId(certification.id);
+    setTab("certifications");
+  };
+
+  const deleteCertification = (id: string) => {
+    updateContent((current) => ({
+      ...current,
+      certifications: current.certifications.filter(
+        (certification) => certification.id !== id,
+      ),
+    }));
+    setSelectedCertificationId(
+      content.certifications.find((certification) => certification.id !== id)
+        ?.id ?? "",
+    );
+  };
+
+  const updateCertification = (id: string, patch: Partial<Certification>) => {
+    updateContent((current) => ({
+      ...current,
+      certifications: current.certifications.map((certification) =>
+        certification.id === id
+          ? { ...certification, ...patch }
+          : certification,
       ),
     }));
   };
@@ -455,30 +678,25 @@ export function AdminPanel() {
                   }
                   textarea
                 />
-                <TextField
+                <ListField
                   label="Highlights, uno por línea"
-                  value={joinList(content.profile.highlights)}
-                  onChange={(value) =>
+                  value={content.profile.highlights}
+                  onChange={(highlights) =>
                     updateContent((current) => ({
                       ...current,
-                      profile: {
-                        ...current.profile,
-                        highlights: splitList(value),
-                      },
+                      profile: { ...current.profile, highlights },
                     }))
                   }
-                  textarea
                 />
-                <TextField
+                <ListField
                   label="Skills, una por línea"
-                  value={joinList(content.profile.skills)}
-                  onChange={(value) =>
+                  value={content.profile.skills}
+                  onChange={(skills) =>
                     updateContent((current) => ({
                       ...current,
-                      profile: { ...current.profile, skills: splitList(value) },
+                      profile: { ...current.profile, skills },
                     }))
                   }
-                  textarea
                 />
               </div>
             )}
@@ -548,26 +766,68 @@ export function AdminPanel() {
                       }
                       textarea
                     />
-                    <TextField
+                    <ListField
                       label="Tecnologías, una por línea"
-                      value={joinList(selectedProject.technologies)}
-                      onChange={(value) =>
-                        updateProject(selectedProject.id, {
-                          technologies: splitList(value),
-                        })
+                      value={selectedProject.technologies}
+                      onChange={(technologies) =>
+                        updateProject(selectedProject.id, { technologies })
                       }
-                      textarea
                     />
-                    <TextField
-                      label="Imágenes, una URL/ruta por línea"
-                      value={joinList(selectedProject.images)}
-                      onChange={(value) =>
-                        updateProject(selectedProject.id, {
-                          images: splitList(value),
-                        })
-                      }
-                      textarea
-                    />
+                    <div className="space-y-3">
+                      <ListField
+                        label="Imágenes, una URL/ruta por línea"
+                        value={selectedProject.images}
+                        onChange={(images) =>
+                          updateProject(selectedProject.id, { images })
+                        }
+                        helper="También puedes pegar rutas como /projects/imagen.png o URLs externas."
+                      />
+                      <label className="flex cursor-pointer items-center justify-center gap-2 rounded-2xl border border-dashed border-primary/40 bg-primary/10 px-4 py-3 text-sm font-black text-primary transition hover:bg-primary/15">
+                        <ImagePlus className="h-4 w-4" />
+                        Subir imagen desde mi equipo
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          className="sr-only"
+                          onChange={(event) => {
+                            void handleProjectImageUpload(
+                              selectedProject.id,
+                              event.currentTarget.files,
+                            );
+                            event.currentTarget.value = "";
+                          }}
+                        />
+                      </label>
+                      {selectedProject.images.length > 0 && (
+                        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                          {selectedProject.images.map((image, index) => (
+                            <div
+                              key={`${image}-${index}`}
+                              className="group relative overflow-hidden rounded-2xl border border-border bg-card"
+                            >
+                              <img
+                                src={image}
+                                alt={`${selectedProject.title} preview ${
+                                  index + 1
+                                }`}
+                                className="h-24 w-full object-cover"
+                                loading="lazy"
+                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  removeProjectImage(selectedProject.id, index)
+                                }
+                                className="absolute right-2 top-2 rounded-xl bg-slate-950/80 px-2 py-1 text-[11px] font-black text-white opacity-90 transition hover:opacity-100"
+                              >
+                                Quitar
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <button
                       onClick={() => deleteProject(selectedProject.id)}
                       className="inline-flex items-center justify-center gap-2 self-end rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-black text-destructive transition hover:bg-destructive/15"
@@ -655,15 +915,12 @@ export function AdminPanel() {
                       }
                       textarea
                     />
-                    <TextField
+                    <ListField
                       label="Tecnologías/temas, uno por línea"
-                      value={joinList(selectedExperience.technologies)}
-                      onChange={(value) =>
-                        updateExperience(selectedExperience.id, {
-                          technologies: splitList(value),
-                        })
+                      value={selectedExperience.technologies}
+                      onChange={(technologies) =>
+                        updateExperience(selectedExperience.id, { technologies })
                       }
-                      textarea
                     />
                     <button
                       onClick={() => deleteExperience(selectedExperience.id)}
@@ -677,40 +934,142 @@ export function AdminPanel() {
               </div>
             )}
 
+            {tab === "certifications" && (
+              <div className="grid gap-5 xl:grid-cols-[260px_1fr]">
+                <div className="space-y-2">
+                  <button
+                    onClick={addCertification}
+                    className="mb-3 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-4 py-2.5 text-sm font-black text-primary-foreground"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Agregar certificación
+                  </button>
+                  {content.certifications.map((certification) => (
+                    <button
+                      key={certification.id}
+                      onClick={() => setSelectedCertificationId(certification.id)}
+                      className={cn(
+                        "w-full rounded-2xl border px-3 py-3 text-left text-sm font-bold transition",
+                        selectedCertification?.id === certification.id
+                          ? "border-primary/40 bg-primary/10 text-primary"
+                          : "border-border bg-card/50 hover:bg-secondary",
+                      )}
+                    >
+                      {certification.title}
+                    </button>
+                  ))}
+                </div>
+
+                {selectedCertification ? (
+                  <div className="grid gap-5 lg:grid-cols-2">
+                    <TextField
+                      label="Título"
+                      value={selectedCertification.title}
+                      onChange={(title) =>
+                        updateCertification(selectedCertification.id, { title })
+                      }
+                    />
+                    <TextField
+                      label="ID"
+                      value={selectedCertification.id}
+                      onChange={(id) => {
+                        updateCertification(selectedCertification.id, { id });
+                        setSelectedCertificationId(id);
+                      }}
+                    />
+                    <TextField
+                      label="Entidad emisora"
+                      value={selectedCertification.issuer}
+                      onChange={(issuer) =>
+                        updateCertification(selectedCertification.id, { issuer })
+                      }
+                    />
+                    <TextField
+                      label="Fecha"
+                      value={selectedCertification.date}
+                      onChange={(date) =>
+                        updateCertification(selectedCertification.id, { date })
+                      }
+                    />
+                    <TextField
+                      label="URL de credencial"
+                      value={selectedCertification.credentialUrl ?? ""}
+                      onChange={(credentialUrl) =>
+                        updateCertification(selectedCertification.id, {
+                          credentialUrl,
+                        })
+                      }
+                    />
+                    <TextField
+                      label="Descripción"
+                      value={selectedCertification.description}
+                      onChange={(description) =>
+                        updateCertification(selectedCertification.id, {
+                          description,
+                        })
+                      }
+                      textarea
+                    />
+                    <ListField
+                      label="Tecnologías/temas, uno por línea"
+                      value={selectedCertification.technologies}
+                      onChange={(technologies) =>
+                        updateCertification(selectedCertification.id, {
+                          technologies,
+                        })
+                      }
+                    />
+                    <button
+                      onClick={() =>
+                        deleteCertification(selectedCertification.id)
+                      }
+                      className="inline-flex items-center justify-center gap-2 self-end rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm font-black text-destructive transition hover:bg-destructive/15"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                      Eliminar certificación
+                    </button>
+                  </div>
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-border bg-card/40 p-6 text-sm leading-7 text-muted-foreground">
+                    Todavía no hay certificaciones. Usa “Agregar certificación”
+                    para crear la primera.
+                  </div>
+                )}
+              </div>
+            )}
+
             {tab === "languages" && (
               <div className="space-y-5">
-                <TextField
+                <DraftTextareaField
                   label="Ecosistema técnico"
-                  value={content.languageEcosystem
-                    .map((item) => `${item.name} :: ${item.use}`)
-                    .join("\n")}
-                  onChange={(value) =>
+                  value={content.languageEcosystem}
+                  formatValue={(value) =>
+                    value.map((item) => `${item.name} :: ${item.use}`).join("\n")
+                  }
+                  parseValue={(value) =>
+                    value
+                      .split("\n")
+                      .map((line) => line.trim())
+                      .filter(Boolean)
+                      .map((line) => {
+                        const [name, ...rest] = line.split("::");
+                        return {
+                          name: name.trim(),
+                          use:
+                            rest.join("::").trim() ||
+                            "Uso dentro del proyecto",
+                        };
+                      })
+                  }
+                  onChange={(languageEcosystem) =>
                     updateContent((current) => ({
                       ...current,
-                      languageEcosystem: value
-                        .split("\n")
-                        .map((line) => line.trim())
-                        .filter(Boolean)
-                        .map((line) => {
-                          const [name, ...rest] = line.split("::");
-                          return {
-                            name: name.trim(),
-                            use:
-                              rest.join("::").trim() ||
-                              "Uso dentro del proyecto",
-                          };
-                        }),
+                      languageEcosystem,
                     }))
                   }
-                  textarea
                   placeholder="TypeScript :: Frontend y tipos"
+                  helper="Formato recomendado: Lenguaje :: Uso dentro del proyecto. Puedes editar, borrar o reordenar líneas sin que el campo se reinicie en cada tecla."
                 />
-                <p className="text-sm leading-7 text-muted-foreground">
-                  Formato recomendado:{" "}
-                  <code>Lenguaje :: Uso dentro del proyecto</code>. Esto
-                  alimenta la tarjeta visual del inicio y el contexto del
-                  asistente.
-                </p>
               </div>
             )}
 

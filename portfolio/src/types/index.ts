@@ -1,6 +1,11 @@
 import type { ReactNode } from "react"
 
-export type MessageContentType = "text" | "project" | "experience" | "contact"
+export type MessageContentType =
+  | "text"
+  | "project"
+  | "experience"
+  | "certification"
+  | "contact"
 
 export interface Message {
   id: string
@@ -33,6 +38,16 @@ export interface Experience {
   description: string
   technologies: string[]
   companyUrl?: string
+}
+
+export interface Certification {
+  id: string
+  title: string
+  issuer: string
+  date: string
+  description: string
+  technologies: string[]
+  credentialUrl?: string
 }
 
 export interface SocialLinks {
@@ -72,10 +87,16 @@ export interface PortfolioContent {
   about: string
   projects: Project[]
   experiences: Experience[]
+  certifications: Certification[]
   languageEcosystem: LanguageEntry[]
 }
 
-export type SidebarSectionId = "about" | "projects" | "experience" | "contact"
+export type SidebarSectionId =
+  | "about"
+  | "projects"
+  | "experience"
+  | "certifications"
+  | "contact"
 
 export interface SidebarSection {
   id: SidebarSectionId
