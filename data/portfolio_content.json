@@ -229,7 +229,23 @@
       "companyUrl": ""
     }
   ],
-  "certifications": [],
+  "certifications": [
+    {
+      "id": "OA-2026-0517002631683",
+      "title": "Cursor con Python: desarrollo inteligente con IA",
+      "issuer": "Santander Open Academy",
+      "date": "Mayo 2026",
+      "description": "Formación orientada al uso de Cursor y Python para desarrollo asistido por IA, productividad técnica, generación y revisión\nde código, automatización de tareas y mejora de flujos de programación.",
+      "technologies": [
+        "Cursor",
+        "Python",
+        "IA Aplicada",
+        "Desarrollo de software inteligente",
+        "Ingeniería Multimedia"
+      ],
+      "credentialUrl": ""
+    }
+  ],
   "languageEcosystem": [
     {
       "name": "TypeScript",
