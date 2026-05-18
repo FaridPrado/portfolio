@@ -3,7 +3,7 @@
 **Portfolio profesional conversacional de Farid Stiven Prado Hoyos**  
 Ingeniería Multimedia, producto digital e inteligencia artificial aplicada.
 
-[Ver portfolio online](https://faridprado.vercel.app) · [GitHub](https://github.com/faridSprado) · [LinkedIn](https://www.linkedin.com/in/farid-prado/)
+[Ver portfolio online](https://faridprado.vercel.app) · [GitHub](https://github.com/FaridPrado) · [LinkedIn](https://www.linkedin.com/in/farid-prado/)
 
 ---
 
@@ -262,7 +262,7 @@ CONTACT_EMAIL=
 
 GITHUB_SYNC_ENABLED=false
 GITHUB_TOKEN=
-GITHUB_OWNER=faridSprado
+GITHUB_OWNER=FaridPrado
 GITHUB_REPO=portfolio
 GITHUB_BRANCH=main
 GITHUB_CONTENT_PATH=data/portfolio_content.json
@@ -304,7 +304,7 @@ VITE_CLIENT_SECRET=
 ### 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/faridSprado/portfolio.git
+git clone https://github.com/FaridPrado/portfolio.git
 cd portfolio
 ```
 
@@ -604,7 +604,7 @@ Este repositorio demuestra habilidades en:
 ## Contacto
 
 - **Portfolio:** https://faridprado.vercel.app
-- **GitHub:** https://github.com/faridSprado
+- **GitHub:** https://github.com/FaridPrado
 - **LinkedIn:** https://www.linkedin.com/in/farid-prado/
 - **Email:** faridvzx@gmail.com
 
