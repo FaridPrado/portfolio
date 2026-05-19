@@ -34,7 +34,7 @@ export const defaultPortfolioContent: PortfolioContent = {
     "description": "Portfolio conversacional de Farid Stiven Prado Hoyos, estudiante de Ingeniería Multimedia con foco en Inteligencia Artificial aplicada.",
     "ogImage": "/og-image.svg",
     "social": {
-      "github": "https://github.com/faridSprado",
+      "github": "https://github.com/FaridPrado",
       "linkedin": "https://www.linkedin.com/in/farid-prado/",
       "email": "faridvzx@gmail.com"
     }
