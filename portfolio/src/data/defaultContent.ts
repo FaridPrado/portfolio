@@ -28,7 +28,7 @@ export const defaultPortfolioContent: PortfolioContent = {
     ]
   },
   "site": {
-    "url": "https://faridprado.dev",
+    "url": "https://faridprado.vercel.app",
     "name": "Farid Stiven Prado Hoyos",
     "title": "Farid Stiven Prado Hoyos | Ingeniería Multimedia e Inteligencia Artificial",
     "description": "Portfolio conversacional de Farid Stiven Prado Hoyos, estudiante de Ingeniería Multimedia con foco en Inteligencia Artificial aplicada.",
@@ -56,7 +56,7 @@ export const defaultPortfolioContent: PortfolioContent = {
         "Docker",
         "Nginx"
       ],
-      "repoUrl": "https://github.com/faridSprado",
+      "repoUrl": "https://github.com/FaridPrado",
       "projectUrl": "",
       "images": []
     },
@@ -78,8 +78,8 @@ export const defaultPortfolioContent: PortfolioContent = {
       "technologies": [
         "Python"
       ],
-      "repoUrl": "https://github.com/faridSprado/procedural-writing-system",
-      "projectUrl": "https://faridSprado.github.io/procedural-writing-system/",
+      "repoUrl": "https://github.com/FaridPrado/procedural-writing-system",
+      "projectUrl": "https://FaridPrado.github.io/procedural-writing-system/",
       "images": []
     },
     {
@@ -94,7 +94,7 @@ export const defaultPortfolioContent: PortfolioContent = {
         "Dockerfile",
         "Shell"
       ],
-      "repoUrl": "https://github.com/faridSprado/insightagent-saag",
+      "repoUrl": "https://github.com/FaridPrado/insightagent-saag",
       "projectUrl": "https://insightagent-saag.onrender.com",
       "images": [
         "/projects/InsightAgent-SaaG.png"
@@ -156,7 +156,7 @@ export const defaultPortfolioContent: PortfolioContent = {
         "Tailwind",
         "UI Engineering"
       ],
-      "companyUrl": "https://github.com/faridSprado"
+      "companyUrl": "https://github.com/FaridPrado"
     },
     {
       "id": "experience-mp50wkb0",
