@@ -208,12 +208,12 @@
     {
       "id": "experience-mp50wkb0",
       "company": "Alcaldía Municipal de Yumbo",
-      "role": "Gestor de Medios Digitales y Comunicaciones",
+      "role": "Ingeniero Multimedia (Consultor de Procesos y Automatización)",
       "period": {
         "start": "Enero 2022",
         "end": "Diciembre 2023"
       },
-      "description": "Participé en la estrategia visual y la gestión técnica de los canales digitales de la Administración Municipal. Diseñé activos gráficos, produje reportes audiovisuales de alto impacto y automaticé la atención al ciudadano (PQRS) implementando sistemas de respuesta en redes sociales. Esta experiencia me enseñó a escalar la producción masiva de contenidos bajo estrictos lineamientos corporativos, a auditar textos con rigor editorial, y a utilizar la automatización para resolver cuellos de botella operativos, sentando las bases de mi enfoque actual en la creación de sistemas visuales eficientes y escalables.",
+      "description": "Como Ingeniero Multimedia y Consultor de Procesos, lideré la modernización del ecosistema digital institucional mediante la ingeniería de procesos y el análisis de datos.\n\nAutomatización Operativa: Diseñé flujos de trabajo con respuestas lógicas para la gestión de atención ciudadana, garantizando operatividad 24/7 y eliminando tiempos de latencia institucional.\n\nBusiness Intelligence: Transformé datos cualitativos en reportes métricos y dashboards estratégicos, facilitando la toma de decisiones basadas en evidencia para la Administración Central.\n\nArquitectura de Sistemas Visuales: Gestioné de manera escalable activos multimedia y el despliegue técnico sincronizado en múltiples plataformas, asegurando la integridad de la identidad visual.\n\nOptimización UX: Elevé los estándares de comunicación técnica mediante la curaduría de contenidos y UX Writing, garantizando información precisa, accesible y de alto impacto digital.",
       "technologies": [
         "Automatización de flujos de mensajes (Meta / Chatbots)",
         "Gestión y Analítica de Redes Sociales (Community Management)",
@@ -287,6 +287,22 @@
         "Automatización de Flujos de Trabajo",
         "Optimización de procesos",
         "IA Generativa"
+      ],
+      "credentialUrl": ""
+    },
+    {
+      "id": "OA-2026-0521002647180",
+      "title": "Google: IA Práctica para Marketing",
+      "issuer": "Google",
+      "date": "Mayo 2026",
+      "description": "Certificación en aplicación operativa de IA generativa y analítica de datos. Desarrollé competencias clave en optimización de campañas digitales, prompt engineering y automatización creativa, aplicadas para potenciar el alcance y posicionamiento de productos multimedia.",
+      "technologies": [
+        "Análisis de datos",
+        "Ingeniería de prompts",
+        "Prompt Engineering",
+        "NotebookLM",
+        "GA4",
+        "IA"
       ],
       "credentialUrl": ""
     }
