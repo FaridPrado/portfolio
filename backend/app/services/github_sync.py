@@ -20,6 +20,29 @@ def github_sync_is_enabled() -> bool:
     return _env("GITHUB_SYNC_ENABLED", "false").lower() in {"1", "true", "yes", "on"}
 
 
+async def _resolve_repository_full_name(
+    client: httpx.AsyncClient,
+    headers: dict[str, str],
+    owner: str,
+    repo: str,
+) -> str:
+    """Return GitHub's canonical owner/repo, following renamed-user redirects."""
+    repository_url = f"https://api.github.com/repos/{owner}/{repo}"
+    response = await client.get(repository_url, headers=headers, follow_redirects=True)
+
+    if response.status_code != 200:
+        raise GitHubSyncError(
+            f"Could not resolve GitHub repository {owner}/{repo}. "
+            f"Status: {response.status_code}. Body: {response.text}"
+        )
+
+    full_name = response.json().get("full_name")
+    if not isinstance(full_name, str) or "/" not in full_name:
+        raise GitHubSyncError("GitHub did not return a valid repository full_name.")
+
+    return full_name
+
+
 async def sync_portfolio_content_to_github(content: dict[str, Any]) -> dict[str, Any] | None:
     """
     Updates data/portfolio_content.json in GitHub.
@@ -42,8 +65,6 @@ async def sync_portfolio_content_to_github(content: dict[str, Any]) -> dict[str,
             "GitHub sync is enabled, but GITHUB_TOKEN, GITHUB_OWNER or GITHUB_REPO is missing."
         )
 
-    api_url = f"https://api.github.com/repos/{owner}/{repo}/contents/{path}"
-
     headers = {
         "Accept": "application/vnd.github+json",
         "Authorization": f"Bearer {token}",
@@ -51,6 +72,9 @@ async def sync_portfolio_content_to_github(content: dict[str, Any]) -> dict[str,
     }
 
     async with httpx.AsyncClient(timeout=30) as client:
+        full_name = await _resolve_repository_full_name(client, headers, owner, repo)
+        api_url = f"https://api.github.com/repos/{full_name}/contents/{path}"
+
         current_file = await client.get(
             api_url,
             headers=headers,

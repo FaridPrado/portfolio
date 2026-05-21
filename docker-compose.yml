@@ -24,6 +24,14 @@ services:
       GEMINI_MAX_OUTPUT_TOKENS: ${GEMINI_MAX_OUTPUT_TOKENS:-2500}
       ADMIN_SECRET: ${ADMIN_SECRET:-dev-admin-secret-change-me}
       PORTFOLIO_CONTENT_PATH: ${PORTFOLIO_CONTENT_PATH:-/app/data/portfolio_content.json}
+      GITHUB_SYNC_ENABLED: ${GITHUB_SYNC_ENABLED:-false}
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      GITHUB_OWNER: ${GITHUB_OWNER:-FaridPrado}
+      GITHUB_REPO: ${GITHUB_REPO:-portfolio}
+      GITHUB_BRANCH: ${GITHUB_BRANCH:-main}
+      GITHUB_CONTENT_PATH: ${GITHUB_CONTENT_PATH:-data/portfolio_content.json}
+      GITHUB_COMMIT_AUTHOR_NAME: ${GITHUB_COMMIT_AUTHOR_NAME:-Farid Stiven Prado Hoyos}
+      GITHUB_COMMIT_AUTHOR_EMAIL: ${GITHUB_COMMIT_AUTHOR_EMAIL:-}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-Portfolio Farid <onboarding@resend.dev>}
       CONTACT_EMAIL: ${CONTACT_EMAIL:-faridvzx@gmail.com}
